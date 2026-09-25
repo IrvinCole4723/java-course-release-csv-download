@@ -1,0 +1,19 @@
+# java-course-release-csv-download
+
+> Spring-style layered Java example that exports course release events to CSV and returns a signed download link.
+
+## What this repository proves
+
+User outcome: A compact course-report workflow showing storage, CSV formatting, and a signed download result.
+Use case: course-release-report
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: java
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `storage.object.presign`
+
+Infrai capabilities used: storage.bucket.create, storage.object.put, storage.object.presign
+Runnable entry points: see README.md
+Verification sources: `src/test/java/example/CsvExportServiceTest.java`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt

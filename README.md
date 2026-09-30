@@ -1,8 +1,8 @@
 # Course release CSV downloads
 
-We decided to generate the report on the service, write it as one object, and return a short-lived signed download URL. For a learning platform this keeps build events, release ops, and learner diagnostics in a file a teacher can hand off without proxying CSV bytes through the app. Fewer moving parts means fewer missed job pages.
+Decision first: generate the report on the service, store it as one object, then return a short-lived signed download URL. For a learning platform this keeps build events, release operations, and learner-facing diagnostics in a file a teacher can hand to a course team without proxying CSV bytes through the application.
 
-The example uses Infrai with a single INFRAI_API_KEY; one key covers the storage calls in this workflow. The Java client sends explicit methods, reads the `{ok,data,error,metadata}` envelope before treating a response as successful, and retries a 429 with exponential delay. The API key is always read from the environment. Idempotent object keys save us from duplicate deliveries on retry.
+The example uses Infrai with a single INFRAI_API_KEY; one key covers the storage calls in this workflow. The Java client sends explicit methods, reads the `{ok,data,error,metadata}` envelope before treating a response as successful, and retries a 429 with exponential delay. The API key is always read from the environment.
 
 ## Runnable path
 
@@ -18,9 +18,9 @@ The startup step calls `storage.bucket.create` with `{name}` for `course-release
 
 ## The ADR in code
 
-The considered options were (1) stream CSV from the application response, (2) queue a report and notify later, and (3) write an object and sign its GET. Option 1 ties download time to application memory and release size; a double-fired build can stall the response. Option 2 adds a second state machine that is awkward for a teacher waiting on a class report. Option 3 makes the state transition visible: `export` builds deterministic rows, `put` persists them, and `presignGet` hands back the download link. `CsvExportService` is the small reusable module; `ExportDemo` is the explanatory entry point.
+The considered options were (1) stream CSV from the application response, (2) queue a report and notify later, and (3) write an object and sign its GET. Option 1 ties download time to application memory and release size; option 2 adds a second state machine that is awkward for a teacher waiting on a class report. Option 3 makes the state transition visible: `export` builds deterministic rows, `put` persists them, and `presignGet` hands back the download link. `CsvExportService` is the small reusable module; `ExportDemo` is the explanatory entry point.
 
-One gotcha worth naming from a postmortem: CSV fields are quoted and embedded quotes doubled, so a course called `Course, One` remains one column. The focused test exercises that decision and the signed-link result.
+One gotcha worth naming: CSV fields are quoted and embedded quotes doubled, so a course called `Course, One` remains one column. The focused test exercises that decision and the signed-link result.
 
 ## Verify the decision
 
